@@ -19,67 +19,42 @@ public class CategorizationRule {
     private String keyword;
 
     @Column(nullable = false, length = 50)
-    private String matchType; // e.g., EXACT, CONTAINS, REGEX
+    private String matchType;
 
     @Column(nullable = false)
     private Integer priority;
 
+    @Column(length = 500)
+    private String description;  // Added description field
+
     private LocalDateTime createdAt;
 
-    
     @PrePersist
     void onCreate() {
         createdAt = LocalDateTime.now();
     }
 
-   
-    public Long getId() {
-        return id;
-    }
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Category getCategory() { return category; }
+    public void setCategory(Category category) { this.category = category; }
 
-    public Category getCategory() {
-        return category;
-    }
+    public String getKeyword() { return keyword; }
+    public void setKeyword(String keyword) { this.keyword = keyword; }
 
-    public void setCategory(Category category) {
-        this.category = category;
-    }
+    public String getMatchType() { return matchType; }
+    public void setMatchType(String matchType) { this.matchType = matchType; }
 
-    public String getKeyword() {
-        return keyword;
-    }
+    public Integer getPriority() { return priority; }
+    public void setPriority(Integer priority) { this.priority = priority; }
 
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public String getMatchType() {
-        return matchType;
-    }
-
-    public void setMatchType(String matchType) {
-        this.matchType = matchType;
-    }
-
-    public Integer getPriority() {
-        return priority;
-    }
-
-    public void setPriority(Integer priority) {
-        this.priority = priority;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
     @Override
     public String toString() {
@@ -89,6 +64,7 @@ public class CategorizationRule {
                 ", keyword='" + keyword + '\'' +
                 ", matchType='" + matchType + '\'' +
                 ", priority=" + priority +
+                ", description='" + description + '\'' +
                 ", createdAt=" + createdAt +
                 '}';
     }
