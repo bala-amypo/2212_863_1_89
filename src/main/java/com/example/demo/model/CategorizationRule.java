@@ -4,15 +4,18 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "categoryName"))
-public class Category {
+public class CategorizationRule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String categoryName;
-    private String description;
+    @ManyToOne
+    private Category category;
+
+    private String keyword;
+    private String matchType; 
+    private Integer priority;
     private LocalDateTime createdAt;
 
     @PrePersist
