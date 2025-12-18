@@ -22,7 +22,7 @@ public class Invoice {
     private String description;
 
     @ManyToOne
-    private Category category; // initially null
+    private Category category; 
 
     @ManyToOne
     private User uploadedBy;
