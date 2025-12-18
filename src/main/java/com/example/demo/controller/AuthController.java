@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.AuthRequest;
+import com.example.demo.dto.AuthResponse;
 import com.example.demo.model.User;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
@@ -24,8 +26,15 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody User user) {
-        User dbUser = userService.findByEmail(user.getEmail());
-        return jwtUtil.generateToken(dbUser.getEmail());
+    public AuthResponse login(
+            @RequestBody AuthRequest request) {
+
+        User user = userService
+                .findByEmail(request.getEmail());
+
+        String token = jwtUtil
+                .generateToken(user.getEmail());
+
+        return new AuthResponse(token);
     }
 }
