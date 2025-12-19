@@ -1,36 +1,51 @@
 package com.example.demo.util;
 
-import com.example.demo.model.*;
-import java.util.List;
+import com.example.demo.model.Category;
+import com.example.demo.model.CategorizationRule;
+import com.example.demo.model.Invoice;
+import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.regex.Pattern;
+
+@Component
 public class InvoiceCategorizationEngine {
 
-    public Category determineCategory(Invoice invoice, List<CategorizationRule> rules) {
+    public Category determineCategory(
+            Invoice invoice,
+            List<CategorizationRule> rules) {
+
         if (rules == null || rules.isEmpty()) {
             return null;
         }
 
-        String description = invoice.getDescription();
-        if (description == null) return null;
+        return rules.stream()
+                .sorted(Comparator.comparing(CategorizationRule::getPriority).reversed())
+                .filter(rule -> matches(rule, invoice.getDescription()))
+                .map(CategorizationRule::getCategory)
+                .findFirst()
+                .orElse(null);
+    }
 
-        for (CategorizationRule rule : rules) {
-            String keyword = rule.getKeyword();
+    private boolean matches(CategorizationRule rule, String description) {
+        if (description == null) return false;
 
-            switch (rule.getMatchType()) {
-                case "EXACT":
-                    if (description.equals(keyword)) return rule.getCategory();
-                    break;
+        switch (rule.getMatchType()) {
+            case "EXACT":
+                return description.equals(rule.getKeyword());
 
-                case "CONTAINS":
-                    if (description.toLowerCase().contains(keyword.toLowerCase()))
-                        return rule.getCategory();
-                    break;
+            case "CONTAINS":
+                return description.toLowerCase()
+                        .contains(rule.getKeyword().toLowerCase());
 
-                case "REGEX":
-                    if (description.matches(keyword)) return rule.getCategory();
-                    break;
-            }
+            case "REGEX":
+                return Pattern.compile(rule.getKeyword())
+                        .matcher(description)
+                        .find();
+
+            default:
+                return false;
         }
-        return null;
     }
 }
