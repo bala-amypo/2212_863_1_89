@@ -12,6 +12,14 @@ public class Invoice {
     private Double amount;
     private String description;
 
+    @ManyToOne
+    @JoinColumn(name = "vendor_id")
+    private Vendor vendor;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
     public Long getId() {
         return id;
     }
@@ -34,5 +42,21 @@ public class Invoice {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Vendor getVendor() {
+        return vendor;
+    }
+
+    public void setVendor(Vendor vendor) {
+        this.vendor = vendor;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }
