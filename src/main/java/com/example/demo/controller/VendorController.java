@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import com.example.demo.entity.Vendor;
 import com.example.demo.service.VendorService;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -17,17 +16,17 @@ public class VendorController {
     }
 
     @PostMapping
-    public Vendor createVendor(@RequestBody Vendor vendor) {
+    public Vendor create(@RequestBody Vendor vendor) {
         return vendorService.createVendor(vendor);
     }
 
     @GetMapping
-    public List<Vendor> getAllVendors() {
+    public List<Vendor> getAll() {
         return vendorService.getAllVendors();
     }
 
-    @GetMapping("/{id}")
-    public Vendor getVendorById(@PathVariable Long id) {
-        return vendorService.getVendorById(id);
+    @GetMapping("/{vendorId}")
+    public Vendor get(@PathVariable Long vendorId) {
+        return vendorService.getVendor(vendorId);
     }
 }

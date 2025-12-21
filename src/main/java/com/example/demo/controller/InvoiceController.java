@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import com.example.demo.entity.Invoice;
 import com.example.demo.service.InvoiceService;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -16,23 +15,26 @@ public class InvoiceController {
         this.invoiceService = invoiceService;
     }
 
-    @PostMapping
-    public Invoice uploadInvoice(@RequestBody Invoice invoice) {
-        return invoiceService.uploadInvoice(invoice);
+    @PostMapping("/upload/{userId}/{vendorId}")
+    public Invoice upload(
+            @PathVariable Long userId,
+            @PathVariable Long vendorId,
+            @RequestBody Invoice invoice) {
+        return invoiceService.uploadInvoice(userId, vendorId, invoice);
     }
 
-    @GetMapping
-    public List<Invoice> getAllInvoices() {
-        return invoiceService.getAllInvoices();
+    @PostMapping("/categorize/{invoiceId}")
+    public Invoice categorize(@PathVariable Long invoiceId) {
+        return invoiceService.categorizeInvoice(invoiceId);
     }
 
-    @GetMapping("/{id}")
-    public Invoice getInvoiceById(@PathVariable Long id) {
-        return invoiceService.getInvoiceById(id);
+    @GetMapping("/user/{userId}")
+    public List<Invoice> getByUser(@PathVariable Long userId) {
+        return invoiceService.getInvoicesByUser(userId);
     }
 
-    @GetMapping("/amount-greater-than/{amount}")
-    public List<Invoice> getInvoicesWithAmountGreaterThan(@PathVariable Double amount) {
-        return invoiceService.findInvoicesWithAmountGreaterThan(amount);
+    @GetMapping("/{invoiceId}")
+    public Invoice get(@PathVariable Long invoiceId) {
+        return invoiceService.getInvoice(invoiceId);
     }
 }
