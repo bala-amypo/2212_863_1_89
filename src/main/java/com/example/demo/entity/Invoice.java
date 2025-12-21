@@ -12,6 +12,11 @@ public class Invoice {
     private Double amount;
     private String description;
 
+    // 🔹 REQUIRED for /api/invoices/user/{userId}
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @ManyToOne
     @JoinColumn(name = "vendor_id")
     private Vendor vendor;
@@ -42,6 +47,14 @@ public class Invoice {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Vendor getVendor() {
