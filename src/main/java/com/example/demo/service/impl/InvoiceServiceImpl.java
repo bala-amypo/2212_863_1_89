@@ -13,14 +13,18 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final InvoiceRepository invoiceRepository;
     private final UserRepository userRepository;
     private final VendorRepository vendorRepository;
+    private final CategoryRepository categoryRepository;
 
     public InvoiceServiceImpl(
             InvoiceRepository invoiceRepository,
             UserRepository userRepository,
-            VendorRepository vendorRepository) {
+            VendorRepository vendorRepository,
+            CategoryRepository categoryRepository) {
+
         this.invoiceRepository = invoiceRepository;
         this.userRepository = userRepository;
         this.vendorRepository = vendorRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
@@ -32,8 +36,13 @@ public class InvoiceServiceImpl implements InvoiceService {
         Vendor vendor = vendorRepository.findById(vendorId)
                 .orElseThrow(() -> new RuntimeException("Vendor not found"));
 
+        Category category = categoryRepository.findById(
+                invoice.getCategory().getId())
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
         invoice.setUser(user);
         invoice.setVendor(vendor);
+        invoice.setCategory(category);
 
         return invoiceRepository.save(invoice);
     }
@@ -44,8 +53,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         Invoice invoice = invoiceRepository.findById(invoiceId)
                 .orElseThrow(() -> new RuntimeException("Invoice not found"));
 
-        // 🔹 TEMP LOGIC (no rules yet)
-        // You can add categorization logic later
+        // Future ML / rule-based categorization logic
         return invoiceRepository.save(invoice);
     }
 
