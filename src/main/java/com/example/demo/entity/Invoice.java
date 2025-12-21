@@ -12,7 +12,6 @@ public class Invoice {
     private Double amount;
     private String description;
 
-    // 🔹 REQUIRED for /api/invoices/user/{userId}
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
