@@ -1,12 +1,18 @@
-package com.example.demo.model;
+package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"invoiceNumber", "vendor_id"})
-})
+@Table(
+        name = "invoices",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"vendor_id", "invoiceNumber"})
+)
 public class Invoice {
 
     @Id
@@ -14,34 +20,40 @@ public class Invoice {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "vendor_id", nullable = false)
     private Vendor vendor;
 
+    @NotBlank
     private String invoiceNumber;
+
+    @NotNull
+    @Positive
     private Double amount;
+
+    @NotNull
     private LocalDate invoiceDate;
+
     private String description;
 
     @ManyToOne
+    @JoinColumn(name = "category_id")
     private Category category;
 
     @ManyToOne
+    @JoinColumn(name = "uploaded_by_id", nullable = false)
     private User uploadedBy;
 
     private LocalDateTime uploadedAt;
 
     @PrePersist
-    void onCreate() {
-        uploadedAt = LocalDateTime.now();
+    public void prePersist() {
+        this.uploadedAt = LocalDateTime.now();
     }
 
-    // ✅ GETTERS & SETTERS
+    // ---------- Getters & Setters ----------
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Vendor getVendor() {
@@ -55,7 +67,7 @@ public class Invoice {
     public String getInvoiceNumber() {
         return invoiceNumber;
     }
-
+    
     public void setInvoiceNumber(String invoiceNumber) {
         this.invoiceNumber = invoiceNumber;
     }
@@ -63,7 +75,7 @@ public class Invoice {
     public Double getAmount() {
         return amount;
     }
-
+    
     public void setAmount(Double amount) {
         this.amount = amount;
     }
@@ -71,7 +83,7 @@ public class Invoice {
     public LocalDate getInvoiceDate() {
         return invoiceDate;
     }
-
+    
     public void setInvoiceDate(LocalDate invoiceDate) {
         this.invoiceDate = invoiceDate;
     }
@@ -79,7 +91,7 @@ public class Invoice {
     public String getDescription() {
         return description;
     }
-
+    
     public void setDescription(String description) {
         this.description = description;
     }
@@ -87,7 +99,7 @@ public class Invoice {
     public Category getCategory() {
         return category;
     }
-
+    
     public void setCategory(Category category) {
         this.category = category;
     }
@@ -95,16 +107,12 @@ public class Invoice {
     public User getUploadedBy() {
         return uploadedBy;
     }
-
+    
     public void setUploadedBy(User uploadedBy) {
         this.uploadedBy = uploadedBy;
     }
 
     public LocalDateTime getUploadedAt() {
         return uploadedAt;
-    }
-
-    public void setUploadedAt(LocalDateTime uploadedAt) {
-        this.uploadedAt = uploadedAt;
     }
 }
