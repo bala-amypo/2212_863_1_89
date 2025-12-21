@@ -1,9 +1,7 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-
+import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,6 +28,9 @@ public class Vendor {
 
     private LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "vendor")
+    private Set<Invoice> invoices = new HashSet<>();
+
     @ManyToMany(mappedBy = "favoriteVendors")
     private Set<User> users = new HashSet<>();
 
@@ -38,45 +39,18 @@ public class Vendor {
         this.createdAt = LocalDateTime.now();
     }
 
-    // ---------- Getters & Setters ----------
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Long getId() {
-        return id;
-    }
+    public String getVendorName() { return vendorName; }
+    public void setVendorName(String vendorName) { this.vendorName = vendorName; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getContactEmail() { return contactEmail; }
+    public void setContactEmail(String contactEmail) { this.contactEmail = contactEmail; }
 
-    public String getVendorName() {
-        return vendorName;
-    }
-    
-    public void setVendorName(String vendorName) {
-        this.vendorName = vendorName;
-    }
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
 
-    public String getContactEmail() {
-        return contactEmail;
-    }
-    
-    public void setContactEmail(String contactEmail) {
-        this.contactEmail = contactEmail;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-    
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public Set<User> getUsers() {
-        return users;
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }
