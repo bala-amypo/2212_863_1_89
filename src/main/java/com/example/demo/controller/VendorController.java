@@ -1,8 +1,9 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Vendor;
+import com.example.demo.entity.Vendor;
 import com.example.demo.service.VendorService;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -20,13 +21,13 @@ public class VendorController {
         return vendorService.createVendor(vendor);
     }
 
-    @GetMapping("/{id}")
-    public Vendor getVendor(@PathVariable Long id) {
-        return vendorService.getVendor(id);
-    }
-
     @GetMapping
     public List<Vendor> getAllVendors() {
         return vendorService.getAllVendors();
+    }
+
+    @GetMapping("/{id}")
+    public Vendor getVendorById(@PathVariable Long id) {
+        return vendorService.getVendorById(id);
     }
 }
