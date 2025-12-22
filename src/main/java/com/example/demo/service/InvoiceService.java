@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Invoice;
-
 import java.util.List;
 
 public interface InvoiceService {
@@ -10,6 +9,7 @@ public interface InvoiceService {
 
     Invoice categorizeInvoice(Long invoiceId);
 
+    
     List<Invoice> getInvoicesByUser(Long userId);
 
     Invoice getInvoiceById(Long invoiceId);

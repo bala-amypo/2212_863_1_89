@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.*;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class InvoiceController {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    // 1️⃣ Upload Invoice
+   
     @PostMapping("/upload/{userId}/{vendorId}")
     public ResponseEntity<Invoice> uploadInvoice(
             @PathVariable Long userId,
@@ -32,10 +33,10 @@ public class InvoiceController {
             @RequestBody Invoice invoice) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID " + userId));
 
         Vendor vendor = vendorRepository.findById(vendorId)
-                .orElseThrow(() -> new RuntimeException("Vendor not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Vendor not found with ID " + vendorId));
 
         invoice.setUser(user);
         invoice.setVendor(vendor);
@@ -43,38 +44,41 @@ public class InvoiceController {
         return ResponseEntity.ok(invoiceRepository.save(invoice));
     }
 
-    // 2️⃣ Categorize Invoice
     @PostMapping("/categorize/{invoiceId}")
     public ResponseEntity<Invoice> categorizeInvoice(@PathVariable Long invoiceId) {
 
         Invoice invoice = invoiceRepository.findById(invoiceId)
-                .orElseThrow(() -> new RuntimeException("Invoice not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Invoice not found with ID " + invoiceId));
 
         Category category;
         if (invoice.getAmount() != null && invoice.getAmount() > 10000) {
             category = categoryRepository.findByName("High Value")
-                    .orElseThrow(() -> new RuntimeException("Category not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Category 'High Value' not found"));
         } else {
             category = categoryRepository.findByName("Regular")
-                    .orElseThrow(() -> new RuntimeException("Category not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Category 'Regular' not found"));
         }
 
         invoice.setCategory(category);
         return ResponseEntity.ok(invoiceRepository.save(invoice));
     }
 
-    // 3️⃣ Get invoices by user
+   
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Invoice>> getUserInvoices(@PathVariable Long userId) {
+        
+        userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID " + userId));
+
         return ResponseEntity.ok(invoiceRepository.findByUserId(userId));
     }
 
-    // 4️⃣ Get invoice by ID
+    
     @GetMapping("/{invoiceId}")
     public ResponseEntity<Invoice> getInvoice(@PathVariable Long invoiceId) {
-        return ResponseEntity.ok(
-                invoiceRepository.findById(invoiceId)
-                        .orElseThrow(() -> new RuntimeException("Invoice not found"))
-        );
+        Invoice invoice = invoiceRepository.findById(invoiceId)
+                .orElseThrow(() -> new ResourceNotFoundException("Invoice not found with ID " + invoiceId));
+
+        return ResponseEntity.ok(invoice);
     }
 }
