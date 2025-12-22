@@ -5,8 +5,6 @@ import com.example.demo.repository.*;
 import com.example.demo.service.InvoiceService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
 
@@ -36,8 +34,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         Vendor vendor = vendorRepository.findById(vendorId)
                 .orElseThrow(() -> new RuntimeException("Vendor not found"));
 
-        Category category = categoryRepository.findById(
-                invoice.getCategory().getId())
+        Category category = categoryRepository.findById(1L)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
         invoice.setUser(user);
@@ -45,26 +42,5 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoice.setCategory(category);
 
         return invoiceRepository.save(invoice);
-    }
-
-    @Override
-    public Invoice categorizeInvoice(Long invoiceId) {
-
-        Invoice invoice = invoiceRepository.findById(invoiceId)
-                .orElseThrow(() -> new RuntimeException("Invoice not found"));
-
-        // Future ML / rule-based categorization logic
-        return invoiceRepository.save(invoice);
-    }
-
-    @Override
-    public List<Invoice> getInvoicesByUser(Long userId) {
-        return invoiceRepository.findByUserId(userId);
-    }
-
-    @Override
-    public Invoice getInvoiceById(Long invoiceId) {
-        return invoiceRepository.findById(invoiceId)
-                .orElseThrow(() -> new RuntimeException("Invoice not found"));
     }
 }
