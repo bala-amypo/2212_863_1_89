@@ -11,8 +11,9 @@ public class Vendor {
     private Long id;
 
     private String name;
-
+   
     @OneToMany(mappedBy = "vendor")
+    @JsonIgnore 
     private List<Invoice> invoices;
 
     public Long getId() {

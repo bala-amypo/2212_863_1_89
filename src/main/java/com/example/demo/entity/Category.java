@@ -13,6 +13,7 @@ public class Category {
     private String name;
 
     @OneToMany(mappedBy = "category")
+    @JsonIgnore 
     private List<Invoice> invoices;
 
     public Long getId() {
