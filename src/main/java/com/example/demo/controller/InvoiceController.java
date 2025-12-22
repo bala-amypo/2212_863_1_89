@@ -29,27 +29,24 @@ public class InvoiceController {
             @PathVariable Long vendorId,
             @RequestBody Invoice invoiceRequest) {
 
-        // Fetch User
+    
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
-        // Fetch Vendor
+        
         Vendor vendor = vendorRepository.findById(vendorId)
                 .orElseThrow(() -> new RuntimeException("Vendor not found with id: " + vendorId));
 
-        // Set associations
+        
         invoiceRequest.setVendor(vendor);
 
-        // Optional: You can set user if Invoice has a user field
-        // invoiceRequest.setUser(user);
-
-        // Save Invoice
+       
         Invoice savedInvoice = invoiceRepository.save(invoiceRequest);
 
         return ResponseEntity.ok(savedInvoice);
     }
 
-    // Optional: Get all invoices
+  
     @GetMapping
     public ResponseEntity<Iterable<Invoice>> getAllInvoices() {
         return ResponseEntity.ok(invoiceRepository.findAll());
