@@ -16,15 +16,22 @@ public class InvoiceController {
         this.invoiceService = invoiceService;
     }
 
-    // POST /api/invoices/upload/{userId}/{vendorId}
-    @PostMapping("/upload/{userId}/{vendorId}")
-    public Invoice uploadInvoice(
-            @PathVariable Long userId,
-            @PathVariable Long vendorId,
-            @RequestBody Invoice invoice) {
+    @Override
+public Invoice uploadInvoice(Long userId, Long vendorId, Invoice invoice) {
 
-        return invoiceService.uploadInvoice(userId, vendorId, invoice);
-    }
+    User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    Vendor vendor = vendorRepository.findById(vendorId)
+            .orElseThrow(() -> new RuntimeException("Vendor not found"));
+
+    invoice.setUser(user);
+    invoice.setVendor(vendor);
+    // Category will be set later
+
+    return invoiceRepository.save(invoice);
+}
+
 
     // POST /api/invoices/categorize/{invoiceId}
     @PostMapping("/categorize/{invoiceId}")
