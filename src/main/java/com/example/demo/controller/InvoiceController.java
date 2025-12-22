@@ -1,53 +1,58 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Invoice;
-import com.example.demo.service.InvoiceService;
+import com.example.demo.entity.User;
+import com.example.demo.entity.Vendor;
+import com.example.demo.repository.InvoiceRepository;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.VendorRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/invoices")
 public class InvoiceController {
 
-    private final InvoiceService invoiceService;
+    @Autowired
+    private InvoiceRepository invoiceRepository;
 
-    public InvoiceController(InvoiceService invoiceService) {
-        this.invoiceService = invoiceService;
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private VendorRepository vendorRepository;
+
+    // POST /api/invoices/upload/{userId}/{vendorId}
+    @PostMapping("/upload/{userId}/{vendorId}")
+    public ResponseEntity<Invoice> uploadInvoice(
+            @PathVariable Long userId,
+            @PathVariable Long vendorId,
+            @RequestBody Invoice invoiceRequest) {
+
+        // Fetch User
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+        // Fetch Vendor
+        Vendor vendor = vendorRepository.findById(vendorId)
+                .orElseThrow(() -> new RuntimeException("Vendor not found with id: " + vendorId));
+
+        // Set associations
+        invoiceRequest.setVendor(vendor);
+
+        // Optional: You can set user if Invoice has a user field
+        // invoiceRequest.setUser(user);
+
+        // Save Invoice
+        Invoice savedInvoice = invoiceRepository.save(invoiceRequest);
+
+        return ResponseEntity.ok(savedInvoice);
     }
 
-    @Override
-public Invoice uploadInvoice(Long userId, Long vendorId, Invoice invoice) {
-
-    User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found"));
-
-    Vendor vendor = vendorRepository.findById(vendorId)
-            .orElseThrow(() -> new RuntimeException("Vendor not found"));
-
-    invoice.setUser(user);
-    invoice.setVendor(vendor);
-    // Category will be set later
-
-    return invoiceRepository.save(invoice);
-}
-
-
-    // POST /api/invoices/categorize/{invoiceId}
-    @PostMapping("/categorize/{invoiceId}")
-    public Invoice categorizeInvoice(@PathVariable Long invoiceId) {
-        return invoiceService.categorizeInvoice(invoiceId);
-    }
-
-    // GET /api/invoices/user/{userId}
-    @GetMapping("/user/{userId}")
-    public List<Invoice> getInvoicesByUser(@PathVariable Long userId) {
-        return invoiceService.getInvoicesByUser(userId);
-    }
-
-    // GET /api/invoices/{invoiceId}
-    @GetMapping("/{invoiceId}")
-    public Invoice getInvoiceById(@PathVariable Long invoiceId) {
-        return invoiceService.getInvoiceById(invoiceId);
+    // Optional: Get all invoices
+    @GetMapping
+    public ResponseEntity<Iterable<Invoice>> getAllInvoices() {
+        return ResponseEntity.ok(invoiceRepository.findAll());
     }
 }
