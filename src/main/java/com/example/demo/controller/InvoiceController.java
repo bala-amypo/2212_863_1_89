@@ -22,8 +22,7 @@ public class InvoiceController {
 
     @Autowired
     private VendorRepository vendorRepository;
-
-    // POST /api/invoices/upload/{userId}/{vendorId}
+    
     @PostMapping("/upload/{userId}/{vendorId}")
     public ResponseEntity<Invoice> uploadInvoice(
             @PathVariable Long userId,
