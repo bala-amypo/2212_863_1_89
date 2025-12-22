@@ -8,19 +8,41 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiError> handleNotFound(ResourceNotFoundException ex, HttpServletRequest req) {
-        return new ResponseEntity<>(
-                new ApiError(LocalDateTime.now(), 404, "NOT_FOUND", ex.getMessage(), req.getRequestURI()),
-                HttpStatus.NOT_FOUND
+        ApiError error = new ApiError(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                "NOT_FOUND",
+                ex.getMessage(),
+                req.getRequestURI()
         );
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiError> handleBadRequest(IllegalArgumentException ex, HttpServletRequest req) {
-        return new ResponseEntity<>(
-                new ApiError(LocalDateTime.now(), 400, "BAD_REQUEST", ex.getMessage(), req.getRequestURI()),
-                HttpStatus.BAD_REQUEST
+        ApiError error = new ApiError(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                "BAD_REQUEST",
+                ex.getMessage(),
+                req.getRequestURI()
         );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiError> handleAllExceptions(Exception ex, HttpServletRequest req) {
+        ex.printStackTrace(); // Optional: print stack trace in console
+        ApiError error = new ApiError(
+                LocalDateTime.now(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "INTERNAL_SERVER_ERROR",
+                ex.getMessage(),
+                req.getRequestURI()
+        );
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
