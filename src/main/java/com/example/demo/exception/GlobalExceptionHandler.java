@@ -1,20 +1,23 @@
 package com.example.demo.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
-import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-   
+    // 404 Not Found
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ApiError> handleNotFound(ResourceNotFoundException ex, HttpServletRequest req) {
+    public ResponseEntity<ApiError> handleNotFound(
+            ResourceNotFoundException ex,
+            HttpServletRequest req) {
+
         ApiError error = new ApiError(
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND.value(),
@@ -22,12 +25,38 @@ public class GlobalExceptionHandler {
                 ex.getMessage(),
                 req.getRequestURI()
         );
+
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-    
+    // 400 Validation Error
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiError> handleValidationErrors(
+            MethodArgumentNotValidException ex,
+            HttpServletRequest req) {
+
+        String message = ex.getBindingResult()
+                .getFieldErrors()
+                .get(0)
+                .getDefaultMessage();
+
+        ApiError error = new ApiError(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                "BAD_REQUEST",
+                message,
+                req.getRequestURI()
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    // 400 Illegal Argument
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiError> handleBadRequest(IllegalArgumentException ex, HttpServletRequest req) {
+    public ResponseEntity<ApiError> handleBadRequest(
+            IllegalArgumentException ex,
+            HttpServletRequest req) {
+
         ApiError error = new ApiError(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
@@ -35,35 +64,16 @@ public class GlobalExceptionHandler {
                 ex.getMessage(),
                 req.getRequestURI()
         );
+
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiError> handleValidationErrors(
-            MethodArgumentNotValidException ex,
+    // 500 Internal Server Error
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiError> handleAllExceptions(
+            Exception ex,
             HttpServletRequest req) {
 
-        String errorMessage = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .collect(Collectors.joining(", "));
-
-        ApiError error = new ApiError(
-                LocalDateTime.now(),
-                HttpStatus.BAD_REQUEST.value(),
-                "BAD_REQUEST",
-                errorMessage,
-                req.getRequestURI()
-        );
-
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiError> handleAllExceptions(Exception ex, HttpServletRequest req) {
-        ex.printStackTrace();
         ApiError error = new ApiError(
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
@@ -71,6 +81,7 @@ public class GlobalExceptionHandler {
                 ex.getMessage(),
                 req.getRequestURI()
         );
+
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
