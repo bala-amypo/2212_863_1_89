@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,13 +17,12 @@ public class UserController {
         this.userService = userService;
     }
 
-    
     @PostMapping("/register")
-    public User registerUser(@RequestBody User user) {
+    public User registerUser(@Valid @RequestBody User user) {
         return userService.saveUser(user);
     }
 
-  
+   
     @GetMapping("/all")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
