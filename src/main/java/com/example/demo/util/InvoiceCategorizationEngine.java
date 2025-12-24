@@ -12,41 +12,55 @@ import java.util.regex.Pattern;
 @Component
 public class InvoiceCategorizationEngine {
 
-    public Category determineCategory(
-            Invoice invoice,
-            List<CategorizationRule> rules) {
-
-        if (rules == null || rules.isEmpty()) {
+    public Category determineCategory(Invoice invoice, List<CategorizationRule> rules) {
+        if (invoice == null || rules == null || rules.isEmpty()) {
             return null;
         }
 
-        return rules.stream()
+        String description = invoice.getDescription();
+        if (description == null) {
+            description = "";
+        }
+
+        // Sort rules by priority in descending order (highest priority first)
+        List<CategorizationRule> sortedRules = rules.stream()
                 .sorted(Comparator.comparing(CategorizationRule::getPriority).reversed())
-                .filter(rule -> matches(rule, invoice.getDescription()))
-                .map(CategorizationRule::getCategory)
-                .findFirst()
-                .orElse(null);
+                .toList();
+
+        for (CategorizationRule rule : sortedRules) {
+            if (matchesRule(description, rule)) {
+                return rule.getCategory();
+            }
+        }
+
+        return null;
     }
 
-    private boolean matches(CategorizationRule rule, String description) {
-        if (description == null) return false;
+    private boolean matchesRule(String description, CategorizationRule rule) {
+        String keyword = rule.getKeyword();
+        String matchType = rule.getMatchType();
 
-        switch (rule.getMatchType()) {
+        if (keyword == null || matchType == null) {
+            return false;
+        }
+
+        switch (matchType.toUpperCase()) {
             case "EXACT":
-                return description.equals(rule.getKeyword());
-
+                return description.equalsIgnoreCase(keyword);
+            
             case "CONTAINS":
-                return description.toLowerCase()
-                        .contains(rule.getKeyword().toLowerCase());
-
+                return description.toLowerCase().contains(keyword.toLowerCase());
+            
             case "REGEX":
-                return Pattern.compile(rule.getKeyword())
-                        .matcher(description)
-                        .find();
-
+                try {
+                    Pattern pattern = Pattern.compile(keyword);
+                    return pattern.matcher(description).find();
+                } catch (Exception e) {
+                    return false;
+                }
+            
             default:
                 return false;
         }
     }
 }
-
