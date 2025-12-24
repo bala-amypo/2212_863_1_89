@@ -2,18 +2,18 @@ package com.example.demo.exception;
 
 import java.time.LocalDateTime;
 
-public class ApiError {
+public class ApiErrorResponse {
     private LocalDateTime timestamp;
     private int status;
     private String error;
     private String message;
     private String path;
 
-    public ApiError() {
+    public ApiErrorResponse() {
         this.timestamp = LocalDateTime.now();
     }
 
-    public ApiError(int status, String error, String message, String path) {
+    public ApiErrorResponse(int status, String error, String message, String path) {
         this.timestamp = LocalDateTime.now();
         this.status = status;
         this.error = error;
