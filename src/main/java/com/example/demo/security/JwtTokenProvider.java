@@ -5,13 +5,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JwtUtil {
+public class JwtTokenProvider {
     
     public String generateToken(UserDetails userDetails, User user) {
-        return "mock-token";
+        return "jwt-token-" + user.getId();
     }
     
     public boolean validateToken(String token, UserDetails userDetails) {
-        return "good-token".equals(token);
+        return token != null && token.startsWith("jwt-token-");
     }
 }
