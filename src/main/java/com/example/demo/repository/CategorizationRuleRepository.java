@@ -9,9 +9,7 @@ import java.util.List;
 
 @Repository
 public interface CategorizationRuleRepository extends JpaRepository<CategorizationRule, Long> {
-    @Query("SELECT r FROM CategorizationRule r WHERE " +
-           "LOWER(r.keyword) LIKE LOWER(CONCAT('%', :description, '%')) " +
-           "OR LOWER(:description) LIKE LOWER(CONCAT('%', r.keyword, '%')) " +
-           "ORDER BY r.priority DESC")
+    
+    @Query("SELECT r FROM CategorizationRule r WHERE LOWER(:description) LIKE LOWER(CONCAT('%', r.keyword, '%'))")
     List<CategorizationRule> findMatchingRulesByDescription(@Param("description") String description);
 }
