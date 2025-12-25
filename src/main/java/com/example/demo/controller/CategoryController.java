@@ -1,37 +1,32 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Category;
-import com.example.demo.service.CategoryService;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
+import com.example.demo.service.impl.CategoryServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/categories")
-@Tag(name = "Categories Endpoints")
+@CrossOrigin(origins = "*")
 public class CategoryController {
-
-    private final CategoryService categoryService;
-
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
-
+    
+    @Autowired
+    private CategoryServiceImpl categoryService;
+    
     @PostMapping
-    public ResponseEntity<Category> createCategory(@Valid @RequestBody Category category) {
-        Category created = categoryService.createCategory(category);
-        return ResponseEntity.ok(created);
+    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
+        Category savedCategory = categoryService.createCategory(category);
+        return ResponseEntity.ok(savedCategory);
     }
-
+    
     @GetMapping
     public ResponseEntity<List<Category>> getAllCategories() {
         List<Category> categories = categoryService.getAllCategories();
         return ResponseEntity.ok(categories);
     }
-
+    
     @GetMapping("/{id}")
     public ResponseEntity<Category> getCategory(@PathVariable Long id) {
         Category category = categoryService.getCategory(id);
