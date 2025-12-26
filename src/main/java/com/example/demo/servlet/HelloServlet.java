@@ -8,7 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import java.io.PrintWriter;
 
 @WebServlet(urlPatterns = "/hello")
-public class SimpleStatusServlet extends HttpServlet {
+public class HelloServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
