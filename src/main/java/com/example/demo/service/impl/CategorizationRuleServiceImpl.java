@@ -12,30 +12,37 @@ import java.util.List;
 public class CategorizationRuleServiceImpl implements CategorizationRuleService {
     private final CategorizationRuleRepository ruleRepository;
     private final CategoryRepository categoryRepository;
-    
+
     public CategorizationRuleServiceImpl(CategorizationRuleRepository ruleRepository, CategoryRepository categoryRepository) {
         this.ruleRepository = ruleRepository;
         this.categoryRepository = categoryRepository;
     }
-    
+
     @Override
     public CategorizationRule createRule(CategorizationRule rule) {
         return ruleRepository.save(rule);
     }
-    
+
     @Override
     public List<CategorizationRule> getAllRules() {
         return ruleRepository.findAll();
     }
-    
+
     @Override
     public CategorizationRule getRule(Long id) {
         return ruleRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Rule not found"));
     }
-    
+
     @Override
     public List<CategorizationRule> findMatchingRules(String description) {
         return ruleRepository.findMatchingRulesByDescription(description);
+    }
+
+    
+    @Override
+    public void deleteRule(Long id) {
+        CategorizationRule rule = getRule(id); // check if rule exists
+        ruleRepository.delete(rule);
     }
 }
