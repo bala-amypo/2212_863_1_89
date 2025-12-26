@@ -12,24 +12,21 @@ import java.util.List;
 
 @Configuration
 public class SwaggerConfig {
-    
+
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .info(new Info()
-                        .title("Invoice Management API")
-                        .version("1.0")
-                        .description("API backend for managing users, vendors, and invoices"))
-                .servers(List.of(
-                        new Server().url("https://9103.32procr.amypo.ai/").description("Development Server")
-                ))
-                .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
-                .components(new io.swagger.v3.oas.models.Components()
-                        .addSecuritySchemes("Bearer Authentication",
-                                new SecurityScheme()
-                                        .type(SecurityScheme.Type.HTTP)
-                                        .scheme("bearer")
-                                        .bearerFormat("JWT")
-                                        .description("JWT token for authentication")));
+            .info(new Info()
+                .title("Invoice Management API")
+                .version("1.0")
+                .description("API backend for managing users, vendors, and invoices"))
+            .addSecurityItem(new SecurityRequirement()
+                .addList("Bearer Authentication"))
+            .components(new Components()
+                .addSecuritySchemes("Bearer Authentication",
+                    new SecurityScheme()
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme("bearer")
+                        .bearerFormat("JWT")));
     }
 }
