@@ -24,7 +24,6 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    // ---------------- REGISTER ----------------
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody User user) {
 
@@ -46,7 +45,6 @@ public class AuthController {
         );
     }
 
-    // ---------------- LOGIN ----------------
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody User loginRequest) {
 

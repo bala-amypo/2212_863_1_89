@@ -1,5 +1,7 @@
 package com.example.demo.config;
 
+import com.example.demo.security.CustomUserDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,31 +15,24 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
+    
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
+    
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-        http
-            .csrf(csrf -> csrf.disable())   // Disable CSRF for REST API
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                        "/api/users/register",   // <-- make register public
-                        "/auth/**",
-                        "/swagger-ui/**",
-                        "/v3/api-docs/**",
-                        "/hello"
-                ).permitAll()
-                .anyRequest().authenticated()   // everything else secured
+        http.csrf().disable()
+            .authorizeHttpRequests(authz -> authz
+                .anyRequest().permitAll()
             );
-
         return http.build();
     }
-
+    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
+    
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
