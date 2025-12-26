@@ -17,9 +17,9 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Supplier Diversity Tracker API")
+                        .title("Invoice Management API")
                         .version("1.0")
-                        .description("API for managing supplier diversity tracking"))
+                        .description("API backend for managing users, vendors, and invoices"))
                 .servers(List.of(
                         new Server().url("https://9103.32procr.amypo.ai/").description("Development Server")
                 ))
