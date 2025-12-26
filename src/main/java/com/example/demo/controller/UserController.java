@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "*")
-@Tag(name = "Users Endpoints", description = "Operations related to Users")
+@Tag(name = "Users-Controller", description = "Operations related to Users")
 public class UserController {
 
     @Autowired
