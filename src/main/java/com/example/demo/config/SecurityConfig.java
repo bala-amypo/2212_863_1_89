@@ -25,6 +25,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(authz -> authz
                 .anyRequest().permitAll()
                 
+                
             );
         return http.build();
     }
