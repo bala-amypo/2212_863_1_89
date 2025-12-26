@@ -7,6 +7,7 @@ import com.example.demo.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,61 +17,70 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 @CrossOrigin(origins = "*")
 public class AuthController {
-    
+
     @Autowired
     private UserServiceImpl userService;
-    
+
     @Autowired
     private AuthenticationManager authenticationManager;
-    
+
     @Autowired
     private UserDetailsService userDetailsService;
-    
+
     @Autowired
     private JwtUtil jwtUtil;
-    
+
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody User user) {
+
         User savedUser = userService.registerUser(user);
-        
-        UserDetails userDetails = org.springframework.security.core.userdetails.User
-                .withUsername(savedUser.getEmail())
-                .password(savedUser.getPassword())
-                .authorities("ROLE_" + (savedUser.getRole() != null ? savedUser.getRole() : "USER"))
-                .build();
-        
+
+        UserDetails userDetails =
+                userDetailsService.loadUserByUsername(savedUser.getEmail());
+
+      
         String token = jwtUtil.generateToken(userDetails, savedUser);
-        
-        AuthResponse response = new AuthResponse(
-            token,
-            savedUser.getId(),
-            savedUser.getEmail(),
-            savedUser.getRole()
+
+        return ResponseEntity.ok(
+                new AuthResponse(
+                        token,
+                        savedUser.getId(),
+                        savedUser.getEmail(),
+                        savedUser.getRole()
+                )
         );
-        
-        return ResponseEntity.ok(response);
     }
-    
+
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody User loginRequest) {
-        authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                loginRequest.getEmail(),
-                loginRequest.getPassword()
-            )
-        );
+    public ResponseEntity<?> login(@RequestBody User loginRequest) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getEmail(),
+                            loginRequest.getPassword()
+                    )
+            );
+        } catch (BadCredentialsException e) {
+            return ResponseEntity
+                    .status(401)
+                    .body("Invalid email or password");
+        }
+
         
-        UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getEmail());
         User user = userService.findByEmail(loginRequest.getEmail());
+        UserDetails userDetails =
+                userDetailsService.loadUserByUsername(loginRequest.getEmail());
+
+        // Generate JWT
         String token = jwtUtil.generateToken(userDetails, user);
-        
-        AuthResponse response = new AuthResponse(
-            token,
-            user.getId(),
-            user.getEmail(),
-            user.getRole()
+
+        return ResponseEntity.ok(
+                new AuthResponse(
+                        token,
+                        user.getId(),
+                        user.getEmail(),
+                        user.getRole()
+                )
         );
-        
-        return ResponseEntity.ok(response);
     }
 }
