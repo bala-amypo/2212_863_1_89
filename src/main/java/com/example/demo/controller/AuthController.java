@@ -1,48 +1,77 @@
-@PostMapping("/register")
-public ResponseEntity<AuthResponse> register(@RequestBody User user) {
+package com.example.demo.controller;
 
-    User savedUser = userService.registerUser(user);
+import com.example.demo.dto.AuthResponse;
+import com.example.demo.model.User;
+import com.example.demo.security.JwtUtil;
+import com.example.demo.service.impl.UserServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.bind.annotation.*;
 
-    String token = jwtUtil.generateToken(
-            savedUser.getId(),
-            savedUser.getEmail(),
-            savedUser.getRole()
-    );
+@RestController
+@RequestMapping("/auth")
+@CrossOrigin(origins = "*")
+public class AuthController {
 
-    return ResponseEntity.ok(
-            new AuthResponse(
-                    token,
-                    savedUser.getId(),
-                    savedUser.getEmail(),
-                    savedUser.getRole()
-            )
-    );
-}
+    @Autowired
+    private UserServiceImpl userService;
 
-@PostMapping("/login")
-public ResponseEntity<?> login(@RequestBody User loginRequest) {
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
-    authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                    loginRequest.getEmail(),
-                    loginRequest.getPassword()
-            )
-    );
+    @Autowired
+    private JwtUtil jwtUtil;
 
-    User user = userService.findByEmail(loginRequest.getEmail());
+    // ---------------- REGISTER ----------------
+    @PostMapping("/register")
+    public ResponseEntity<AuthResponse> register(@RequestBody User user) {
 
-    String token = jwtUtil.generateToken(
-            user.getId(),
-            user.getEmail(),
-            user.getRole()
-    );
+        User savedUser = userService.registerUser(user);
 
-    return ResponseEntity.ok(
-            new AuthResponse(
-                    token,
-                    user.getId(),
-                    user.getEmail(),
-                    user.getRole()
-            )
-    );
+        String token = jwtUtil.generateToken(
+                savedUser.getId(),
+                savedUser.getEmail(),
+                savedUser.getRole()
+        );
+
+        return ResponseEntity.ok(
+                new AuthResponse(
+                        token,
+                        savedUser.getId(),
+                        savedUser.getEmail(),
+                        savedUser.getRole()
+                )
+        );
+    }
+
+    // ---------------- LOGIN ----------------
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@RequestBody User loginRequest) {
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getEmail(),
+                        loginRequest.getPassword()
+                )
+        );
+
+        User user = userService.findByEmail(loginRequest.getEmail());
+
+        String token = jwtUtil.generateToken(
+                user.getId(),
+                user.getEmail(),
+                user.getRole()
+        );
+
+        return ResponseEntity.ok(
+                new AuthResponse(
+                        token,
+                        user.getId(),
+                        user.getEmail(),
+                        user.getRole()
+                )
+        );
+    }
 }
