@@ -9,10 +9,10 @@ import java.io.IOException;
 @WebServlet(urlPatterns = "/hello")
 public class HelloServlet extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
-
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+
         response.setContentType("text/plain");
         response.getWriter().println("Hello from Servlet!");
     }
