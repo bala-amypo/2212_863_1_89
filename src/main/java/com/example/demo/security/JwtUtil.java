@@ -15,7 +15,7 @@ public class JwtUtil {
     private final long expirationMs;
 
     public JwtUtil() {
-        String secretStr = "supplier-diversity-secret-key-1234567890";
+        String secretStr = "API-for-Smart-Invoice-Categorisa";
         this.key = Keys.hmacShaKeyFor(secretStr.getBytes());
         this.expirationMs = 3600000L; // 1 hour
     }
