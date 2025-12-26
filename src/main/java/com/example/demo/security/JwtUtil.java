@@ -17,7 +17,7 @@ public class JwtUtil {
     public JwtUtil() {
         String secretStr = "API-for-Smart-Invoice-Categorisa";
         this.key = Keys.hmacShaKeyFor(secretStr.getBytes());
-        this.expirationMs = 3600000L; // 1 hour
+        this.expirationMs = 3600000L; 
     }
 
     public String generateToken(Long userId, String email, String role) {
