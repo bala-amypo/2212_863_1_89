@@ -17,15 +17,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http.csrf(csrf -> csrf.disable())
+        http
+            .csrf(csrf -> csrf.disable())   // Disable CSRF for REST API
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
+                        "/api/users/register",   // <-- make register public
                         "/auth/**",
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
                         "/hello"
                 ).permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().authenticated()   // everything else secured
             );
 
         return http.build();
