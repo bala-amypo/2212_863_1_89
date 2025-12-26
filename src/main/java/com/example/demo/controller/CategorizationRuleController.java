@@ -21,11 +21,7 @@ public class CategorizationRuleController {
         return ResponseEntity.ok(savedRule);
     }
 
-    @GetMapping
-    public ResponseEntity<List<CategorizationRule>> getAllRules() {
-        List<CategorizationRule> rules = ruleService.getAllRules();
-        return ResponseEntity.ok(rules);
-    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<CategorizationRule> getRule(@PathVariable Long id) {
@@ -33,11 +29,7 @@ public class CategorizationRuleController {
         return ResponseEntity.ok(rule);
     }
 
-    @GetMapping("/match")
-    public ResponseEntity<List<CategorizationRule>> findMatchingRules(@RequestParam String description) {
-        List<CategorizationRule> rules = ruleService.findMatchingRules(description);
-        return ResponseEntity.ok(rules);
-    }
+   
 
     
     @DeleteMapping("/{id}")
