@@ -3,6 +3,7 @@ package com.example.demo.config;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.servers.Server;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,7 @@ public class SwaggerConfig {
                 .title("Invoice Management API")
                 .version("1.0")
                 .description("API backend for managing users, vendors, and invoices"))
+            .addServersItem(new Server().url("https://9103.32procr.amypo.ai/")) // <-- your URL here
             .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
             .components(new Components()
                 .addSecuritySchemes("Bearer Authentication",
