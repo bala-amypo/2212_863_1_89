@@ -1,16 +1,25 @@
 package com.example.demo.servlet;
 
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import jakarta.servlet.annotation.WebServlet;
 
-@WebServlet(urlPatterns = {"/hello"})
-public class HelloServlet extends HttpServlet {
-    
+import java.io.PrintWriter;
+
+@WebServlet(urlPatterns = "/hello")
+public class SimpleStatusServlet extends HttpServlet {
+
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.getWriter().println("Hello from Servlet!");
+    public void doGet(HttpServletRequest request, HttpServletResponse response) {
+
+        try {
+            response.setStatus(200);
+            PrintWriter writer = response.getWriter();
+            writer.write("Hello from Servlet!");
+            writer.flush();
+        } catch (Exception e) {
+            // ignore
+        }
     }
 }
