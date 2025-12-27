@@ -16,22 +16,22 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
     
-        @Autowired
-            private CustomUserDetailsService userDetailsService;
+@Autowired
+private CustomUserDetailsService userDetailsService;
                 
-                    @Bean
-                        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-                                http.csrf().disable()
-                                            .authorizeHttpRequests(authz -> authz
-                                                            .anyRequest().permitAll()
-                                                                        );
-                                                                                return http.build();
-                                                                                    }
+@Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+http.csrf().disable()
+.authorizeHttpRequests(authz -> authz
+.anyRequest().permitAll()
+);
+return http.build();
+}
                                                                                         
-                                                                                            @Bean
-                                                                                                public PasswordEncoder passwordEncoder() {
-                                                                                                        return new BCryptPasswordEncoder();
-                                                                                                            }
+@Bean
+public PasswordEncoder passwordEncoder() {
+return new BCryptPasswordEncoder();
+}
                                                                                                                 
                                                                                                                     @Bean
                                                                                                                         public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
