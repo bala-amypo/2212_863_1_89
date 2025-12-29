@@ -36,6 +36,11 @@
     <properties>
         <java.version>17</java.version>
     </properties>
+     <properties>
+    <java.version>17</java.version>
+    <hibernate.format_sql>true</hibernate.format_sql>
+</properties>
+
 
     <dependencies>
 
@@ -70,6 +75,9 @@
             <artifactId>mysql-connector-j</artifactId>
              
         </dependency>
+        <properties>
+  
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
